@@ -1,0 +1,262 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Landmark, Filter, ChevronRight, X } from 'lucide-react';
+import PageLayout from '@/components/PageLayout';
+
+const courts = ['All', 'Supreme Court', 'Court of Appeal', 'Administrative', 'Commercial', 'Family Court'];
+
+const cases = [
+  {
+    id: 1, ref: 'SC-2023-4821', title: 'Commercial Contract Breach — Force Majeure Doctrine', court: 'Supreme Court', date: '15 Nov 2023',
+    summary: 'Landmark ruling on the application of force majeure in commercial contracts following disruption events, establishing precedent for COVID-era disputes.',
+    outcome: 'Upheld', category: 'Commercial',
+    detail: `HOLDING: The Supreme Court held that the COVID-19 pandemic constituted a force majeure event within the meaning of Article 268 of the Code of Obligations and Contracts (COC), provided that the debtor demonstrates that performance was rendered impossible — not merely more onerous — by the event.
+
+KEY PRINCIPLES ESTABLISHED:
+1. Force majeure requires three cumulative conditions: externality, unpredictability at time of contracting, and irresistibility (impossibility of performance).
+2. Partial impossibility may give rise to partial discharge only; the creditor retains rights proportional to performable obligations.
+3. The burden of proof rests on the party invoking force majeure.
+4. A mere increase in cost of performance does not suffice — the Court rejected the theory of imprévision in Moroccan contract law.
+
+DISSENT: Two justices argued that the COVID-19 context warranted recognition of a hardship doctrine distinct from force majeure.
+
+SIGNIFICANCE: This decision is binding on all lower courts and definitively resolves the COVID-era dispute backlog on force majeure grounds.
+
+Reference: Bulletin de la Cour Suprême, Vol. 34, No. 6 (2023).`
+  },
+  {
+    id: 2, ref: 'CA-2023-1103', title: 'Administrative Authority vs. Private Developer', court: 'Court of Appeal', date: '03 Oct 2023',
+    summary: 'Ruling on the limits of expropriation powers and fair compensation obligations of public authorities in urban development projects.',
+    outcome: 'Partially Upheld', category: 'Administrative',
+    detail: `HOLDING: The Court of Appeal partially upheld the developer's challenge, finding that the administrative authority had failed to follow mandatory prior consultation procedures under Law 7-81 on expropriation, thereby rendering the expropriation order procedurally defective.
+
+KEY POINTS:
+1. Expropriation must be preceded by a public utility declaration (déclaration d'utilité publique — DUP) issued after formal inquiry.
+2. The inquiry minutes must be made public and notified to landowners; failure to do so constitutes an irregularity vitiating the procedure.
+3. On compensation: the Court upheld the administrative valuation methodology but ordered an upward adjustment of 18% to reflect market comparables submitted by the developer's expert.
+
+REVERSED IN PART: The Court dismissed the developer's claim for lost profits, holding that business losses not yet realized are not compensable under Law 7-81.
+
+REFERENCE: Recueil des Arrêts de la Cour d'Appel de Casablanca, No. 1103/2023.`
+  },
+  {
+    id: 3, ref: 'AC-2022-0876', title: 'Tax Evasion — Corporate Piercing of Veil', court: 'Administrative', date: '22 Jul 2022',
+    summary: 'Decision establishing conditions under which tax authorities may pierce the corporate veil to recover unpaid fiscal obligations.',
+    outcome: 'Dismissed', category: 'Administrative',
+    detail: `HOLDING: The Administrative Tribunal dismissed the DGI's application to pierce the corporate veil and hold the sole shareholder personally liable for the company's tax arrears, finding that the tax authority had not met the evidentiary standard required to establish confusion of patrimony.
+
+KEY PRINCIPLES:
+1. The corporate veil may be pierced in tax matters only where the tax authority establishes: (a) actual intermingling of assets between the company and shareholder; (b) the corporate form was used fraudulently to evade legitimate fiscal obligations; and (c) the shareholder exercised de facto control over corporate operations.
+2. Mere undercapitalization or failure to maintain proper books, standing alone, is insufficient.
+3. The tax authority bears the full burden of proof; the taxpayer need not disprove bad faith.
+
+SIGNIFICANCE: This decision raises the evidentiary threshold for veil-piercing in Moroccan tax law, diverging from a more expansive approach taken in several earlier DGI administrative decisions.
+
+NOTE: The DGI has filed a cassation appeal currently pending before the Supreme Court.`
+  },
+  {
+    id: 4, ref: 'SC-2022-3340', title: 'Intellectual Property — Trademark Infringement', court: 'Supreme Court', date: '10 May 2022',
+    summary: 'Supreme Court clarifies standards of proof for trademark infringement in digital commerce contexts, updating the 2009 precedent.',
+    outcome: 'Upheld', category: 'Commercial',
+    detail: `HOLDING: The Supreme Court upheld the Court of Appeal's finding of trademark infringement and affirmed the MAD 2.3M damages award, setting new standards for online trademark enforcement.
+
+KEY PRINCIPLES ESTABLISHED:
+1. The "likelihood of confusion" test applies equally in digital and physical commerce contexts; the relevant consumer is the average internet user of the relevant goods/services.
+2. Use of a mark in meta-tags, keywords, and search advertising constitutes use "in the course of trade" for purposes of Law 17-97 on IP.
+3. Evidence of actual confusion is not required; the court may infer likelihood of confusion from the similarity of marks and goods.
+4. Damages: the Court endorsed the profits-disgorgement methodology as an alternative to actual damages, to be elected by the plaintiff.
+
+UPDATING PRIOR PRECEDENT: The 2009 ruling required actual confusion evidence in e-commerce disputes — this is now overruled.
+
+Reference: Recueil de Jurisprudence de la Cour Suprême, 2022, p. 88.`
+  },
+  {
+    id: 5, ref: 'FC-2023-0455', title: 'International Custody Dispute — Hague Convention', court: 'Family Court', date: '08 Aug 2023',
+    summary: 'Application of the Hague Convention on international child abduction in a bilateral Morocco-France custody dispute.',
+    outcome: 'Upheld', category: 'Family',
+    detail: `HOLDING: The Family Court ordered the return of the child to France as the State of habitual residence, rejecting the mother's invocation of the grave risk exception under Article 13(b) of the 1980 Hague Convention.
+
+KEY FINDINGS:
+1. Habitual residence was established in France, where the child had lived for 4 years prior to the wrongful retention in Morocco.
+2. The father established that the retention was wrongful under the Convention: it occurred in breach of the joint custody rights he was actually exercising.
+3. The "grave risk" exception (Art. 13b) requires a showing of a grave risk of physical or psychological harm — the mother's generalized concerns about schooling and lifestyle did not meet this threshold.
+4. The Court declined to hear evidence on merits of custody, which remains within French jurisdiction.
+
+PROCEDURE: The Court applied the Convention's 6-week target for decision and coordinated directly with the French Central Authority under Article 7.
+
+NOTE: Morocco ratified the 1980 Hague Convention in 2010 with a reservation preserving Moroccan courts' jurisdiction in cases involving Moroccan-national children.`
+  },
+  {
+    id: 6, ref: 'CA-2021-2278', title: 'Labor Dismissal — Procedural Irregularity', court: 'Court of Appeal', date: '19 Dec 2021',
+    summary: 'Court of Appeal ruling on wrongful termination procedural requirements and quantum of damages for unjustified dismissal.',
+    outcome: 'Reversed', category: 'Labor',
+    detail: `HOLDING: The Court of Appeal reversed the first-instance judgment and found the employer liable for unjustified dismissal on procedural grounds, awarding the employee MAD 185,000 in combined damages.
+
+KEY POINTS:
+1. PROCEDURAL REQUIREMENTS: Under Article 62 of the Labor Code, prior to any dismissal for serious cause, the employer must convene the employee to a formal hearing (entretien préalable) and give at least 8 days' notice of that hearing.
+2. VIOLATION FOUND: The employer sent the notice on the same day as the hearing, rendering the hearing illusory — constituting a procedural irregularity that independently justifies the dismissal being deemed abusive.
+3. DAMAGES BREAKDOWN:
+   — Notice period compensation: MAD 42,000 (3 months' salary)
+   — Severance pay: MAD 63,000 (per Arts. 52–56, Labor Code)
+   — Damages for abusive dismissal: MAD 80,000 (6 months' salary, reflecting 12 years' service and employee's age of 48)
+4. PRINCIPLE REAFFIRMED: Procedural irregularities in dismissal render the termination abusive regardless of whether substantive cause exists.
+
+Reference: Arrêts de la Cour d'Appel de Rabat, Chambre Sociale, 2021.`
+  },
+];
+
+const outcomeColors: Record<string, string> = {
+  'Upheld': 'text-green-400 border-green-400/30 bg-green-400/5',
+  'Dismissed': 'text-red-400 border-red-400/30 bg-red-400/5',
+  'Reversed': 'text-yellow-400 border-yellow-400/30 bg-yellow-400/5',
+  'Partially Upheld': 'text-blue-400 border-blue-400/30 bg-blue-400/5',
+};
+
+export default function JudicialPrecedent() {
+  const [search, setSearch] = useState('');
+  const [activeCourt, setActiveCourt] = useState('All');
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const filtered = cases.filter(c => {
+    const matchSearch = c.title.toLowerCase().includes(search.toLowerCase()) || c.summary.toLowerCase().includes(search.toLowerCase()) || c.ref.toLowerCase().includes(search.toLowerCase());
+    const matchCourt = activeCourt === 'All' || c.court === activeCourt;
+    return matchSearch && matchCourt;
+  });
+
+  const toggle = (id: number) => setExpandedId(prev => (prev === id ? null : id));
+
+  return (
+    <PageLayout>
+      <section className="relative py-20 border-b border-border overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-primary/8 rounded-full filter blur-[120px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <p className="text-xs font-mono text-primary tracking-widest uppercase mb-3">Module — 02</p>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">Judicial Precedent</h1>
+            <p className="text-lg text-muted-foreground max-w-2xl">
+              Decades of judicial decisions and legal precedents. Instantly find similar cases and analyze judicial trends with AI.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="py-8 border-b border-border bg-card/20 sticky top-20 z-30 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-4 items-center">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="search"
+              value={search}
+              onChange={e => { setSearch(e.target.value); setExpandedId(null); }}
+              placeholder="Search by case reference, keywords, court..."
+              className="w-full bg-background border border-border rounded-sm pl-11 pr-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/50 text-sm"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
+            <div className="flex flex-wrap gap-2">
+              {courts.map(c => (
+                <button
+                  key={c}
+                  onClick={() => { setActiveCourt(c); setExpandedId(null); }}
+                  className={`text-xs font-mono px-3 py-1.5 rounded-sm border transition-all ${activeCourt === c ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'}`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <p className="text-xs font-mono text-muted-foreground mb-8 uppercase tracking-wider">{filtered.length} Precedents Found</p>
+          <div className="space-y-4">
+            {filtered.map((c, i) => {
+              const isOpen = expandedId === c.id;
+              return (
+                <motion.div
+                  key={c.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.06 }}
+                  className={`bg-card border rounded-sm transition-all duration-300 ${isOpen ? 'border-primary/60 shadow-[0_0_24px_rgba(0,200,255,0.15)]' : 'border-border hover:border-primary/50 hover:shadow-[0_0_20px_rgba(0,200,255,0.08)]'}`}
+                >
+                  <div className="p-6">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-xs font-mono text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-sm">{c.ref}</span>
+                        <span className="text-xs font-mono text-muted-foreground border border-border px-3 py-1 rounded-sm">{c.court}</span>
+                        <span className={`text-xs font-mono border px-3 py-1 rounded-sm ${outcomeColors[c.outcome]}`}>{c.outcome}</span>
+                      </div>
+                      <span className="text-xs font-mono text-muted-foreground">{c.date}</span>
+                    </div>
+                    <h3 className={`font-bold text-lg mb-2 transition-colors ${isOpen ? 'text-primary' : 'text-foreground'}`}>{c.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">{c.summary}</p>
+                    <button
+                      onClick={() => toggle(c.id)}
+                      className="flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all"
+                    >
+                      {isOpen ? (
+                        <><X className="w-4 h-4" /> Close Decision</>
+                      ) : (
+                        <><ChevronRight className="w-4 h-4" /> Read Full Decision</>
+                      )}
+                    </button>
+                  </div>
+
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                        className="overflow-hidden"
+                      >
+                        <div className="border-t border-primary/20 mx-6" />
+                        <div className="p-6 pt-5">
+                          <p className="text-xs font-mono text-primary uppercase tracking-widest mb-4">Decision Summary</p>
+                          <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line font-mono bg-background/50 border border-border/50 rounded-sm p-4">
+                            {c.detail}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+          {filtered.length === 0 && (
+            <div className="text-center py-24 text-muted-foreground">
+              <Landmark className="w-12 h-12 mx-auto mb-4 opacity-30" />
+              <p className="font-mono text-sm">No precedents match your query.</p>
+            </div>
+          )}
+
+          {/* Trend Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4"
+          >
+            {[
+              { label: 'Cases Indexed', value: '12,400+' },
+              { label: 'Courts Covered', value: '48' },
+              { label: 'Years of Data', value: '30+' },
+              { label: 'Updated', value: 'Daily' },
+            ].map((s) => (
+              <div key={s.label} className="bg-card border border-border rounded-sm p-6 text-center">
+                <div className="text-3xl font-bold text-primary mb-1">{s.value}</div>
+                <div className="text-xs font-mono text-muted-foreground uppercase tracking-wider">{s.label}</div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+}

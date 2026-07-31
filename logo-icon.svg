@@ -1,0 +1,356 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Newspaper, Search, ChevronRight, Clock, X } from 'lucide-react';
+import PageLayout from '@/components/PageLayout';
+
+const categories = ['All', 'Legal', 'Financial', 'Administrative', 'Judiciary', 'International'];
+
+const articles = [
+  {
+    id: 1, title: 'Morocco Enacts Major Reform to Commercial Arbitration Law', category: 'Legal', date: '30 Jul 2026', readTime: '4 min', featured: true,
+    excerpt: 'Parliament ratifies significant amendments to Law 08-05 on arbitration, aligning Moroccan practice with UNCITRAL Model Law standards and easing international dispute resolution.',
+    body: `Parliament has ratified comprehensive amendments to Law 08-05 on Arbitration and Conventional Mediation, marking the most significant reform to Morocco's arbitration framework in two decades.
+
+The key changes include:
+
+1. Emergency Arbitration: A new Chapter V introduces emergency arbitration procedures, allowing parties to seek urgent provisional relief from an emergency arbitrator before the full tribunal is constituted — a mechanism previously unavailable under Moroccan law.
+
+2. Electronic Proceedings: Arbitral hearings may now be conducted fully online, with electronic submissions and digital signatures having full legal effect. This addresses a critical gap exposed during the COVID-19 pandemic.
+
+3. Enforcement Improvements: The reform reduces judicial review at the enforcement stage to pure jurisdictional grounds, removing substantive review of the award merits.
+
+4. Consumer Arbitration Carve-Out: Consumer contracts may not contain pre-dispute arbitration clauses — a consumer protection measure aligned with EU standards.
+
+The reform positions Casablanca International Mediation and Arbitration Centre (CIMAC) to compete more effectively with DIFC-LCIA and ICC for regional disputes involving Moroccan law.
+
+The amendments enter into force 90 days after publication in the Official Gazette.`
+  },
+  {
+    id: 2, title: 'Bank Al-Maghrib Raises Key Rate to 3.25% Amid Inflation Pressures', category: 'Financial', date: '28 Jul 2026', readTime: '3 min', featured: false,
+    excerpt: 'The central bank board voted unanimously to increase the benchmark rate by 25 basis points, citing persistent core inflation above the 4% threshold.',
+    body: `Bank Al-Maghrib's Board of Directors voted unanimously at its July 2026 quarterly session to raise the policy rate by 25 basis points to 3.25%, the second consecutive increase this year.
+
+Governor Abdellatif Jouahri cited "persistent core inflation dynamics, which remain above the 4% threshold despite previous tightening," as the primary driver of the decision.
+
+Key macroeconomic context:
+• Core inflation (excluding food and energy): 4.3% year-on-year in June 2026
+• Headline inflation: 3.1% year-on-year
+• GDP growth forecast 2026: revised down to 2.8% from 3.4%
+• Current account deficit: 4.2% of GDP (widening)
+
+The central bank projects that the cumulative tightening will return core inflation to the 2% target range by Q3 2027.
+
+Commercial banks are expected to pass the rate increase through to lending rates within 30–60 days, which may further dampen credit growth — currently at 5.2% year-on-year, already the slowest since 2018.
+
+Analysts at CFG Bank noted that "the unanimous vote signals the Board's commitment to price stability over short-term growth support," and project one additional 25bps hike in October.`
+  },
+  {
+    id: 3, title: 'Ministry of Justice Announces E-Filing Rollout for Civil Courts', category: 'Administrative', date: '25 Jul 2026', readTime: '5 min', featured: false,
+    excerpt: 'A national digital platform for civil court filings will be phased in across all first-instance tribunals by Q1 2027, reducing procedural delays.',
+    body: `The Ministry of Justice has announced the phased national rollout of an electronic filing system for civil court proceedings, with full deployment across all 70 first-instance tribunals targeted by Q1 2027.
+
+Phase 1 (August–October 2026): Casablanca, Rabat, and Marrakech tribunals
+Phase 2 (November 2026–January 2027): Remaining regional capitals
+Phase 3 (February–March 2027): Provincial tribunals
+
+THE SYSTEM WILL ENABLE:
+• Electronic submission of pleadings, exhibits, and procedural motions
+• Automated service of court notifications and hearing schedules
+• Secure document exchange between parties and tribunals
+• Online payment of court fees and stamp duties
+
+The system is integrated with the national eID authentication platform, ensuring party identity verification. Legal practitioners must register through the Barreau national portal before October 2026.
+
+Impact Assessment: The Ministry projects that e-filing will reduce average case processing time from 14 months to 9 months for standard civil proceedings, and eliminate the estimated 340,000 annual physical document submissions currently processed manually.
+
+Critics from the Bar Association have called for a 6-month transition period with parallel paper filing preserved, noting that rural practitioners may face connectivity constraints.`
+  },
+  {
+    id: 4, title: 'Supreme Court Clarifies Scope of Interim Relief in Commercial Matters', category: 'Judiciary', date: '22 Jul 2026', readTime: '6 min', featured: false,
+    excerpt: 'A landmark ruling delineates the conditions under which parties may seek urgent provisional measures before commercial judges without notice.',
+    body: `The Supreme Court's Commercial Chamber has issued a landmark ruling clarifying the conditions and limits of ex parte interim relief in commercial matters — a question that had generated conflicting lower court decisions.
+
+THE RULING ESTABLISHES:
+
+1. Fumus Boni Iuris (Appearance of Right): The applicant must demonstrate a prima facie case on the merits — not certainty of success, but a plausible legal basis for the underlying claim.
+
+2. Periculum in Mora (Risk in Delay): The applicant must show that delay would cause irreparable harm that cannot be adequately compensated by damages.
+
+3. Ex Parte Orders: These may be granted without notice only where the element of surprise is essential to the measure's effectiveness (e.g., asset freezing orders where prior notice would enable dissipation). Ex parte orders must be served within 48 hours.
+
+4. Proportionality: The measure must be proportionate to the threatened harm — courts may not grant relief broader than necessary.
+
+5. Security: The court retains discretion to require the applicant to provide security for potential damages caused by the order.
+
+PRACTICE IMPLICATIONS: Legal practitioners should note that applications that do not address all four criteria explicitly will be rejected on procedural grounds, following the Court's new standardized checklist.
+
+The decision consolidates previously conflicting approaches taken by the Casablanca and Rabat commercial courts, providing certainty for interim injunction practice.`
+  },
+  {
+    id: 5, title: 'Morocco-EU Investment Protection Agreement Enters Force', category: 'International', date: '20 Jul 2026', readTime: '4 min', featured: false,
+    excerpt: 'The bilateral investment treaty provides enhanced legal certainty for EU investors, with ICSID arbitration as the primary dispute mechanism.',
+    body: `The Morocco-EU Investment Protection Agreement (IPA) entered into force on 15 July 2026, following ratification by the European Parliament and the Moroccan Parliament in June 2026.
+
+KEY PROVISIONS:
+
+Investment Protection Standards:
+• Fair and equitable treatment (FET) standard — defined with reference to legitimate expectations of the investor
+• Protection against unlawful expropriation without prompt, adequate, and effective compensation
+• Full protection and security obligation
+• National treatment and most-favoured-nation treatment
+
+Dispute Resolution:
+• Investor-State Dispute Settlement (ISDS) through ICSID
+• Optional mediation step before arbitration
+• Transparency rules: all submissions and hearings are public
+• Third-party funding must be disclosed
+
+Sustainable Development Chapter:
+• Parties commit to not lowering environmental or labor standards to attract investment
+• A dedicated Sustainable Development Committee with civil society representation
+
+MARKET IMPACT: The IPA replaces 21 existing bilateral investment treaties between Morocco and individual EU member states. EU FDI into Morocco reached MAD 14.2B in 2025 and is projected to grow significantly under the enhanced framework.
+
+The Casablanca Finance City Authority described the agreement as "a cornerstone of Morocco's positioning as the premier investment platform for Europe-Africa capital flows."`
+  },
+  {
+    id: 6, title: 'Public Procurement Portal Integrated with Tax Administration System', category: 'Administrative', date: '18 Jul 2026', readTime: '3 min', featured: false,
+    excerpt: 'Marchepassport now automatically cross-checks bidder fiscal compliance, reducing manual verification requirements for contracting authorities.',
+    body: `The Ministry of Economy has announced the integration of the public procurement portal (Marchés Publics / MarchéPassport) with the DGI (Directorate General of Taxes) and CNSS (National Social Security Fund) data systems.
+
+WHAT CHANGES:
+Previously, contracting authorities manually verified bidder tax compliance through paper attestations updated every 3 months. Under the new system:
+
+• Real-time compliance verification at bid submission — bidders are flagged immediately if they have outstanding fiscal obligations
+• CNSS contribution status automatically checked — ensures bidder compliance with social security obligations
+• Attestations are generated automatically and embedded in the bid record
+• Contracting authorities no longer need to request, store, or verify paper certificates
+
+IMPLEMENTATION:
+The integration became operational on 15 July 2026 for contracts above MAD 1 million. Extension to all contracts above MAD 100,000 is planned for Q1 2027.
+
+IMPACT: The Ministry estimates the change will eliminate approximately 280,000 annual paper attestation requests and reduce the administrative burden on contracting authorities by an average of 3 working days per procurement procedure.
+
+Practitioners note that bidders with installment payment agreements for fiscal debts (échéancier) will be treated as compliant, provided the agreement is current.`
+  },
+  {
+    id: 7, title: 'Takaful Insurance Market Exceeds MAD 1 Billion in Premiums', category: 'Financial', date: '15 Jul 2026', readTime: '4 min', featured: false,
+    excerpt: 'The sharia-compliant insurance market hit the milestone three years ahead of ACAPS projections, driven by strong family takaful uptake.',
+    body: `Morocco's Takaful insurance market has surpassed the MAD 1 billion threshold in annual premiums as of H1 2026, three years ahead of the projections made in the ACAPS 2020 Takaful Development Plan.
+
+MARKET BREAKDOWN:
+• Total Takaful Premiums (H1 2026 annualized): MAD 1.08 billion
+• Family Takaful (life-equivalent): 68% of premiums
+• General Takaful (non-life): 32%
+• Number of licensed operators: 7 full Takaful companies + 4 Takaful windows
+• Number of Takaful policyholders: 890,000
+
+GROWTH DRIVERS:
+1. Bancassurance Distribution: Islamic banks Umnia Bank, Bank Assafa, and the Takaful windows of Attijariwafa and CIH have substantially expanded their Takaful distribution
+2. Consumer Awareness: A 2024 national Takaful awareness campaign reached 4.2 million Moroccans
+3. Product Innovation: New parametric agricultural Takaful products launched by two operators for small farmers
+
+ACAPS RESPONSE: The insurance regulator has launched a consultation on increasing the minimum capital requirement for Takaful operators from MAD 50 million to MAD 100 million, citing the need to align solvency standards with the sector's growing systemic importance.
+
+International: Morocco's Takaful market is now the 4th largest in Africa and the largest in North Africa, attracting attention from GCC reinsurance groups.`
+  },
+  {
+    id: 8, title: 'New Data Protection Regulation Introduces Mandatory DPO for SMEs', category: 'Legal', date: '12 Jul 2026', readTime: '5 min', featured: false,
+    excerpt: 'CNDP announces binding guidelines requiring firms above 50 employees processing sensitive personal data to appoint a data protection officer.',
+    body: `The Commission Nationale de Contrôle de la Protection des Données à Caractère Personnel (CNDP) has issued binding guidelines (Délibération No. 2026-14) requiring the appointment of a Data Protection Officer (DPO) for organizations meeting the new thresholds.
+
+DPO OBLIGATION TRIGGERS (from 1 October 2026):
+1. Public authorities and bodies — all sizes
+2. Private sector organizations with ≥250 employees
+3. Private sector organizations with 50–249 employees that process sensitive personal data (health, biometric, criminal records, etc.)
+4. Any organization whose core activity involves large-scale systematic monitoring of individuals
+
+DPO REQUIREMENTS:
+• Must hold recognized data protection qualification (CPDSE, CIPP/E, or equivalent)
+• Must be registered with CNDP within 30 days of appointment
+• Can be an employee or external consultant
+• Protected from dismissal in retaliation for DPO functions (analogous to whistleblower protection)
+
+SANCTIONS: Failure to appoint a DPO when required exposes the organization to fines of up to MAD 300,000 per the revised Law 09-08 penalty framework.
+
+PRACTITIONER NOTE: Organizations in the 50–249 employee range should immediately assess whether their personal data processing activities trigger the obligation. Legal counsel specializing in data protection can provide a gap analysis against the CNDP criteria.
+
+The CNDP has opened a DPO certification examination process with the first sitting scheduled for 15 September 2026.`
+  },
+];
+
+export default function News() {
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const filtered = articles.filter(a => {
+    const matchSearch = a.title.toLowerCase().includes(search.toLowerCase()) || a.excerpt.toLowerCase().includes(search.toLowerCase());
+    const matchCat = activeCategory === 'All' || a.category === activeCategory;
+    return matchSearch && matchCat;
+  });
+
+  const featured = filtered.find(a => a.featured);
+  const rest = filtered.filter(a => !a.featured);
+
+  const toggle = (id: number) => setExpandedId(prev => (prev === id ? null : id));
+
+  return (
+    <PageLayout>
+      <section className="relative py-20 border-b border-border overflow-hidden">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/8 rounded-full filter blur-[120px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <p className="text-xs font-mono text-primary tracking-widest uppercase mb-3">Module — 06</p>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">News & Updates</h1>
+            <p className="text-lg text-muted-foreground max-w-2xl">
+              Curated legal, financial and administrative news — filtered for professional relevance and updated daily.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="py-8 border-b border-border bg-card/20 sticky top-20 z-30 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-4 items-center">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="search"
+              value={search}
+              onChange={e => { setSearch(e.target.value); setExpandedId(null); }}
+              placeholder="Search news, topics, legislation..."
+              className="w-full bg-background border border-border rounded-sm pl-11 pr-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/50 text-sm"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {categories.map(c => (
+              <button
+                key={c}
+                onClick={() => { setActiveCategory(c); setExpandedId(null); }}
+                className={`text-xs font-mono px-3 py-1.5 rounded-sm border transition-all ${activeCategory === c ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'}`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-6 space-y-8">
+          {/* Featured */}
+          {featured && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`group relative bg-card border rounded-sm transition-all duration-300 overflow-hidden ${expandedId === featured.id ? 'border-primary/70 shadow-[0_0_30px_rgba(0,200,255,0.18)]' : 'border-primary/30 hover:border-primary/60 hover:shadow-[0_0_30px_rgba(0,200,255,0.12)]'}`}
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 filter blur-[60px] pointer-events-none" />
+              <div className="relative z-10 p-8 md:p-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-xs font-mono text-primary bg-primary/10 border border-primary/30 px-3 py-1 rounded-sm">Featured</span>
+                  <span className="text-xs font-mono border border-border px-3 py-1 rounded-sm text-muted-foreground">{featured.category}</span>
+                </div>
+                <h2 className={`text-2xl md:text-3xl font-bold mb-3 transition-colors ${expandedId === featured.id ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>{featured.title}</h2>
+                <p className="text-muted-foreground leading-relaxed mb-5 max-w-3xl">{featured.excerpt}</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground">
+                    <span>{featured.date}</span>
+                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{featured.readTime} read</span>
+                  </div>
+                  <button
+                    onClick={() => toggle(featured.id)}
+                    className="flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all"
+                  >
+                    {expandedId === featured.id ? <><X className="w-4 h-4" /> Close</> : <><ChevronRight className="w-4 h-4" /> Read Article</>}
+                  </button>
+                </div>
+              </div>
+
+              <AnimatePresence>
+                {expandedId === featured.id && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.35, ease: 'easeInOut' }}
+                    className="overflow-hidden"
+                  >
+                    <div className="border-t border-primary/20 mx-8 md:mx-10" />
+                    <div className="p-8 md:p-10 pt-6">
+                      <div className="prose prose-invert max-w-none text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                        {featured.body}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+
+          {/* Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {rest.map((a, i) => {
+              const isOpen = expandedId === a.id;
+              return (
+                <motion.div
+                  key={a.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.07 }}
+                  className={`bg-card border rounded-sm transition-all duration-300 flex flex-col ${isOpen ? 'border-primary/60 shadow-[0_0_15px_rgba(0,200,255,0.12)] md:col-span-2 lg:col-span-3' : 'border-border hover:border-primary/50 hover:shadow-[0_0_15px_rgba(0,200,255,0.08)]'}`}
+                >
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs font-mono text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-sm">{a.category}</span>
+                    </div>
+                    <h3 className={`font-bold text-base mb-2 leading-snug transition-colors flex-grow ${isOpen ? 'text-primary' : 'text-foreground'}`}>{a.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4">{a.excerpt}</p>
+                    <div className="flex items-center justify-between text-xs font-mono text-muted-foreground">
+                      <span className="flex items-center gap-2">
+                        {a.date}
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{a.readTime}</span>
+                      </span>
+                      <button
+                        onClick={() => toggle(a.id)}
+                        className="flex items-center gap-1 text-primary font-semibold hover:gap-2 transition-all text-xs"
+                      >
+                        {isOpen ? <><X className="w-3 h-3" /> Close</> : <><ChevronRight className="w-3 h-3" /> Read</>}
+                      </button>
+                    </div>
+                  </div>
+
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                        className="overflow-hidden"
+                      >
+                        <div className="border-t border-primary/20 mx-6" />
+                        <div className="p-6 pt-5">
+                          <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                            {a.body}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {filtered.length === 0 && (
+            <div className="text-center py-24 text-muted-foreground">
+              <Newspaper className="w-12 h-12 mx-auto mb-4 opacity-30" />
+              <p className="font-mono text-sm">No articles match your search.</p>
+            </div>
+          )}
+        </div>
+      </section>
+    </PageLayout>
+  );
+}

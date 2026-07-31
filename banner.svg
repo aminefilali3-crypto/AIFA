@@ -1,0 +1,310 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TrendingUp, Search, ChevronRight, BarChart3, PieChart, Activity, X } from 'lucide-react';
+import PageLayout from '@/components/PageLayout';
+
+const sectors = ['All', 'Banking', 'Insurance', 'Capital Markets', 'SME Finance', 'Public Debt', 'Microfinance'];
+
+const studies = [
+  {
+    id: 1, title: 'Moroccan Banking Sector Stress Test 2024', sector: 'Banking', date: 'Nov 2024', risk: 'Medium', icon: BarChart3,
+    summary: 'Scenario analysis of Moroccan bank resilience under interest rate shocks and credit risk crystallization over a 3-year horizon.',
+    detail: `OVERVIEW
+Bank Al-Maghrib commissioned this stress test covering the 8 systemically important banks (D-SIBs) representing 87% of sector assets under three macroeconomic scenarios over a 3-year horizon (2024–2026).
+
+SCENARIOS
+• Baseline: GDP growth 3.2%; inflation 2.8%; NPL ratio stable at 8.4%.
+• Adverse: GDP contraction -1.5%; rate shock +200bps; NPL ratio rising to 14%.
+• Severely Adverse: GDP contraction -3.8%; global credit crunch; NPL ratio 21%.
+
+KEY FINDINGS
+1. CAPITAL ADEQUACY: Under the Baseline, all 8 D-SIBs maintain CET1 above the 9% regulatory minimum. Under Adverse, 2 banks fall below 9%, requiring MAD 3.1B in recapitalization. Under Severely Adverse, 4 banks breach minimum capital.
+2. LIQUIDITY: The Liquidity Coverage Ratio (LCR) remains above 100% for all banks under Baseline and Adverse. Two banks breach LCR under Severely Adverse.
+3. PROFITABILITY: Net Interest Margin contracts by 35bps under the Adverse scenario due to funding cost pressure outpacing asset repricing.
+4. REAL ESTATE EXPOSURE: Banks with concentration >25% of loan book in real estate show 40% higher NPL sensitivity under all adverse scenarios.
+
+RECOMMENDATIONS
+• Bank Al-Maghrib should activate the counter-cyclical capital buffer at 0.5% given current credit growth.
+• Diversify collateral requirements away from real estate concentration.
+• Strengthen intra-group contagion monitoring for banking groups with insurance subsidiaries.`
+  },
+  {
+    id: 2, title: 'Casablanca Stock Exchange — Mid-Cap Performance Review', sector: 'Capital Markets', date: 'Oct 2024', risk: 'Low', icon: TrendingUp,
+    summary: 'Comparative performance analysis of mid-cap issuers on the CSE against MASI benchmark for FY2024, with valuation gaps highlighted.',
+    detail: `OVERVIEW
+This report examines the 34 mid-cap constituents of the Casablanca Stock Exchange (CSE) with market capitalization between MAD 500M and MAD 5B, analyzing their FY2024 performance against the MASI benchmark.
+
+KEY METRICS (FY2024 vs. MASI)
+• Mid-Cap Index Return: +14.2% vs. MASI +8.7%
+• Average P/E Ratio: 18.4x vs. MASI 22.1x — suggesting mid-caps trade at a 17% valuation discount
+• Dividend Yield: 3.8% vs. MASI 2.9%
+• Average Daily Liquidity: MAD 3.2M vs. MAD 24M for large-caps (liquidity premium gap)
+
+SECTOR BREAKDOWN
+• Best Performing: Agro-industry (+31.2%), Insurance (+22.7%), Construction (+18.4%)
+• Worst Performing: Tourism (+1.1%), Retail (-3.2%), Telecoms (-7.8%)
+
+VALUATION GAP ANALYSIS
+Mid-cap companies trade at a consistent 15-20% discount to large-caps on a P/E basis. Primary drivers:
+1. Analyst Coverage: Only 38% of mid-caps have active sell-side coverage (≥2 analysts).
+2. Institutional Ownership: Average 22% institutional ownership vs. 61% for large-caps.
+3. Free Float: Average 31% free float — limits index inclusion eligibility.
+
+RECOMMENDATIONS
+• AMMC should incentivize research coverage through fee-rebate mechanisms.
+• Introduce a dedicated mid-cap index to improve visibility and passive investment flows.
+• Review free-float thresholds for index inclusion to increase eligible universe.`
+  },
+  {
+    id: 3, title: 'SME Access to Finance: Barriers & Policy Recommendations', sector: 'SME Finance', date: 'Sep 2024', risk: 'High', icon: PieChart,
+    summary: 'Diagnostic of structural financing barriers facing Moroccan SMEs, drawing on 450 enterprise survey responses and BKGR data.',
+    detail: `OVERVIEW
+This diagnostic study draws on a survey of 450 SMEs (stratified by sector and region), Bank Al-Maghrib enterprise financing data (BKGR), and interviews with 18 commercial bank relationship managers.
+
+FINANCING GAP
+The estimated SME financing gap in Morocco is MAD 38–47 billion annually — representing approximately 14% of outstanding bank credit to the private sector.
+
+KEY BARRIERS IDENTIFIED
+1. Collateral Requirements: 78% of surveyed SMEs cited collateral as the primary barrier. Banks require collateral coverage of 150–200% of loan value; only 42% of SMEs own qualifying real estate.
+2. Financial Reporting Quality: 64% of SMEs do not prepare IFRS-compliant financial statements; banks apply risk premiums of 200–350bps to account for information asymmetry.
+3. Interest Rate Perception: Average effective rate for SME loans: 6.8% — SME owners perceive this as prohibitive relative to working capital returns of 4–12%.
+4. Processing Time: Average credit decision time: 47 days for SMEs vs. 12 days for large corporates.
+
+POLICY GAPS
+• Caisse Centrale de Garantie (CCG) guarantee scheme covers only 31% of eligible SMEs — awareness and bank uptake gaps.
+• No functioning SME credit bureau — information asymmetry remains structural.
+
+RECOMMENDATIONS
+• Reform CCG guarantee structure to reduce bank risk-weighting below 50%.
+• Mandate simplified financial reporting standards for SMEs (below MAD 10M revenue).
+• Introduce SME-specific bank rating system incorporating cash flow rather than asset-based collateral.`
+  },
+  {
+    id: 4, title: 'Treasury Debt Sustainability Analysis 2024–2030', sector: 'Public Debt', date: 'Aug 2024', risk: 'Medium', icon: Activity,
+    summary: 'Stochastic debt sustainability analysis for Morocco under base, optimistic and adverse macroeconomic scenarios.',
+    detail: `OVERVIEW
+This analysis applies the IMF Debt Sustainability Framework (Low-Income Country DSA, adapted) to Morocco's central government debt trajectory under three scenarios through 2030.
+
+CURRENT POSITION (2024)
+• Total Central Government Debt: MAD 1.04 trillion (73.8% of GDP)
+• External Debt Component: 28.4% of total (predominantly multilateral and bilateral)
+• Average Cost of Debt: 4.1% (domestic); 2.8% (external, currency-unhedged)
+• Debt Service / Revenue: 34.2%
+
+SCENARIO RESULTS
+| Indicator | Base (2030) | Optimistic (2030) | Adverse (2030) |
+|---|---|---|---|
+| Debt/GDP | 68.2% | 59.1% | 84.7% |
+| Debt Service/Revenue | 31.4% | 27.8% | 44.1% |
+| Primary Balance Required | -0.8% | +0.3% | -3.2% |
+
+KEY RISKS
+1. Exchange rate depreciation of 15% would add 4.2pp to external debt/GDP.
+2. Interest rate shock of +200bps would increase annual debt service by MAD 4.8B.
+3. Contingent liabilities from SOE debt (MAD 210B off-balance-sheet) represent the most significant risk factor.
+
+CONCLUSION: Debt trajectory is sustainable under Base and Optimistic scenarios. The Adverse scenario warrants fiscal consolidation measures — a primary surplus of 0.5% GDP is recommended as a buffer.`
+  },
+  {
+    id: 5, title: 'Takaful Insurance Market Development Study', sector: 'Insurance', date: 'Jul 2024', risk: 'Low', icon: BarChart3,
+    summary: 'Assessment of the nascent Takaful sector under Law 59-13, including operator readiness, product gaps and consumer awareness.',
+    detail: `OVERVIEW
+Following the entry into force of Law 59-13 on Takaful insurance in 2020, Morocco's sharia-compliant insurance market has grown rapidly. This study assesses the sector's development across four dimensions: regulatory compliance, operator capacity, product range, and consumer adoption.
+
+MARKET SIZE (2024)
+• Total Takaful Premiums: MAD 1.08 billion (exceeded MAD 1B milestone 3 years ahead of ACAPS projections)
+• Market Share of Total Insurance: 3.2% (vs. 0.1% in 2020)
+• Licensed Operators: 7 full Takaful operators + 4 Takaful windows of conventional insurers
+• Dominant Product: Family Takaful (life-equivalent) at 68% of premiums
+
+REGULATORY ASSESSMENT
+• Law 59-13 compliance: All operators have established the required Sharia Supervisory Board (SSB).
+• Surplus distribution: 81% of operators follow the wakala-waqf model; 19% use the mudaraba model.
+• Capital adequacy: All operators meet the MAD 50M minimum capital requirement; average solvency margin 174%.
+
+GAPS IDENTIFIED
+1. General Takaful (non-life) remains underdeveloped at 32% of premiums — key missing products: agriculture Takaful, trade credit Takaful.
+2. Consumer awareness index: 34% of Moroccan adults aware of Takaful as distinct from conventional insurance.
+3. Bancassurance channel integration: Only 2 of 7 operators have signed distribution agreements with Islamic banks.
+
+RECOMMENDATIONS
+• ACAPS to issue technical guidance on agriculture Takaful product parameters.
+• Launch national Takaful awareness campaign in partnership with the High Council of Ulema.`
+  },
+  {
+    id: 6, title: 'Microcredit Impact Assessment — Rural Morocco', sector: 'Microfinance', date: 'Jun 2024', risk: 'Low', icon: PieChart,
+    summary: 'Evaluation of AMC-affiliated MFI portfolio quality, borrower outcomes and environmental risk factors in rural regions.',
+    detail: `OVERVIEW
+This impact assessment covers 12 AMC (Association de Micro-crédit) affiliated MFIs operating in rural regions, covering 280,000 active borrowers across Souss-Massa, Drâa-Tafilalet, and Béni Mellal-Khénifra regions.
+
+PORTFOLIO QUALITY
+• Portfolio at Risk >30 days (PAR30): 4.8% (below the sector benchmark of 6.2%)
+• Write-off Ratio: 1.2% (stable vs. prior year)
+• Average Loan Size: MAD 8,400
+• Average Loan Term: 18 months
+
+BORROWER OUTCOMES (Survey of 1,240 borrowers)
+1. Income Impact: 61% of borrowers reported net income increase after 24 months; median increase MAD 890/month.
+2. Asset Accumulation: 48% report acquisition of productive assets (livestock, small equipment) financed by microcredit proceeds.
+3. Female Empowerment: 73% of borrowers are women; 58% report increased household decision-making authority.
+4. School Enrollment: Households with active microcredit show 12pp higher secondary school enrollment for children (vs. control group).
+
+ENVIRONMENTAL RISK FACTORS
+• 34% of borrowers in agriculture face water stress risk rated High by WWAP index.
+• 18% face desertification risk — loan officer training on climate-sensitive portfolio management is absent in 8 of 12 MFIs.
+
+RECOMMENDATIONS
+• Introduce climate risk scoring into loan officer assessment methodology.
+• Develop group guarantee products specifically for women-led cooperatives.
+• Expand digital repayment channels — currently only 12% of rural borrowers use mobile payment.`
+  },
+];
+
+const riskColors: Record<string, string> = {
+  Low: 'text-green-400 border-green-400/30 bg-green-400/5',
+  Medium: 'text-yellow-400 border-yellow-400/30 bg-yellow-400/5',
+  High: 'text-red-400 border-red-400/30 bg-red-400/5',
+};
+
+export default function FinancialStudies() {
+  const [search, setSearch] = useState('');
+  const [activeSector, setActiveSector] = useState('All');
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const filtered = studies.filter(s => {
+    const matchSearch = s.title.toLowerCase().includes(search.toLowerCase()) || s.summary.toLowerCase().includes(search.toLowerCase());
+    const matchSector = activeSector === 'All' || s.sector === activeSector;
+    return matchSearch && matchSector;
+  });
+
+  const toggle = (id: number) => setExpandedId(prev => (prev === id ? null : id));
+
+  return (
+    <PageLayout>
+      <section className="relative py-20 border-b border-border overflow-hidden">
+        <div className="absolute top-1/4 left-0 w-[400px] h-[400px] bg-primary/8 rounded-full filter blur-[120px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <p className="text-xs font-mono text-primary tracking-widest uppercase mb-3">Module — 05</p>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">Financial Studies</h1>
+            <p className="text-lg text-muted-foreground max-w-2xl">
+              AI-powered financial analysis covering banking, capital markets, public debt and SME finance across the Moroccan economy.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* KPI Bar */}
+      <section className="py-6 border-b border-border bg-card/30">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Studies Published', value: '340+' },
+            { label: 'Sectors Covered', value: '12' },
+            { label: 'Data Sources', value: '28' },
+            { label: 'Updated', value: 'Monthly' },
+          ].map(kpi => (
+            <div key={kpi.label} className="text-center">
+              <div className="text-2xl font-bold text-primary">{kpi.value}</div>
+              <div className="text-xs font-mono text-muted-foreground uppercase tracking-wider mt-1">{kpi.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="py-8 border-b border-border bg-card/20 sticky top-20 z-30 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-4 items-center">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="search"
+              value={search}
+              onChange={e => { setSearch(e.target.value); setExpandedId(null); }}
+              placeholder="Search financial studies, sectors..."
+              className="w-full bg-background border border-border rounded-sm pl-11 pr-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/50 text-sm"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {sectors.map(s => (
+              <button
+                key={s}
+                onClick={() => { setActiveSector(s); setExpandedId(null); }}
+                className={`text-xs font-mono px-3 py-1.5 rounded-sm border transition-all ${activeSector === s ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'}`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <p className="text-xs font-mono text-muted-foreground mb-8 uppercase tracking-wider">{filtered.length} Studies Found</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((s, i) => {
+              const isOpen = expandedId === s.id;
+              return (
+                <motion.div
+                  key={s.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.07 }}
+                  className={`bg-card border rounded-sm transition-all duration-300 flex flex-col ${isOpen ? 'border-primary/60 shadow-[0_0_24px_rgba(0,200,255,0.15)] md:col-span-2 lg:col-span-3' : 'border-border hover:border-primary/50 hover:shadow-[0_0_20px_rgba(0,200,255,0.08)]'}`}
+                >
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 bg-background border rounded-sm flex items-center justify-center text-primary shrink-0 transition-colors ${isOpen ? 'border-primary/50' : 'border-border'}`}>
+                          <s.icon className="w-5 h-5" />
+                        </div>
+                        <span className="text-xs font-mono text-primary bg-primary/10 border border-primary/20 px-2 py-1 rounded-sm">{s.sector}</span>
+                      </div>
+                      <span className={`text-xs font-mono border px-2 py-1 rounded-sm ${riskColors[s.risk]}`}>Risk: {s.risk}</span>
+                    </div>
+                    <h3 className={`font-bold text-base mb-2 leading-tight transition-colors ${isOpen ? 'text-primary' : 'text-foreground'}`}>{s.title}</h3>
+                    <p className="text-sm text-muted-foreground flex-grow leading-relaxed">{s.summary}</p>
+                    <div className="flex items-center justify-between mt-4">
+                      <span className="text-xs font-mono text-muted-foreground">{s.date}</span>
+                      <button
+                        onClick={() => toggle(s.id)}
+                        className="flex items-center gap-1.5 text-sm font-semibold text-primary hover:gap-2.5 transition-all"
+                      >
+                        {isOpen ? <><X className="w-4 h-4" /> Close</> : <><ChevronRight className="w-4 h-4" /> Read</>}
+                      </button>
+                    </div>
+                  </div>
+
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                        className="overflow-hidden"
+                      >
+                        <div className="border-t border-primary/20 mx-6" />
+                        <div className="p-6 pt-5">
+                          <p className="text-xs font-mono text-primary uppercase tracking-widest mb-4">Full Analysis</p>
+                          <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line font-mono bg-background/50 border border-border/50 rounded-sm p-4">
+                            {s.detail}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+            {filtered.length === 0 && (
+              <div className="col-span-3 text-center py-24 text-muted-foreground">
+                <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                <p className="font-mono text-sm">No studies match your search.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
